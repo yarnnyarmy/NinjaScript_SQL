@@ -25,8 +25,6 @@ GO
 
 /* ---------- 2) Check if the last row matches given parameters ---------- */
 /*-----------
-DECLARE @IsMatch BIT;
-
 EXEC dbo.CheckLastDoubleBottomWMatch
     @FirstLowBarDate   = '2025-09-20 15:36:00.000',
     @FirstLowBarPrice  = 115835.810000,
@@ -39,13 +37,12 @@ EXEC dbo.CheckLastDoubleBottomWMatch
     @HighBarCount      = 6,
     @LeftSideWTime     = '2025-09-20 15:25:00.000',
     @LeftSideWPrice    = 115882.890000,
-    @LeftSideWBarCount = 14,
-    @IsMatch           = @IsMatch OUTPUT;
+    @LeftSideWBarCount = 14;
 
-SELECT @IsMatch AS IsMatch; 
 ------------*/
 
 /*-- 1 = matches last row, 0 = not*/
+-- Re-runnable create
 DROP PROCEDURE IF EXISTS dbo.CheckLastDoubleBottomWMatch;
 GO
 CREATE PROCEDURE dbo.CheckLastDoubleBottomWMatch
@@ -60,8 +57,7 @@ CREATE PROCEDURE dbo.CheckLastDoubleBottomWMatch
     @HighBarCount       INT,
     @LeftSideWTime      DATETIME,
     @LeftSideWPrice     DECIMAL(18,6),
-    @LeftSideWBarCount  INT,
-    @IsMatch            BIT OUTPUT        -- result: 1 = matches, 0 = not
+    @LeftSideWBarCount  INT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -72,7 +68,7 @@ BEGIN
         FROM dbo.DoubleBottomW
         ORDER BY Id DESC
     )
-    SELECT @IsMatch =
+    SELECT
         CASE WHEN EXISTS
         (
             SELECT 1
@@ -91,6 +87,7 @@ BEGIN
             AND L.LeftSideWPrice    = @LeftSideWPrice
             AND L.LeftSideWBarCount = @LeftSideWBarCount
         )
-        THEN 1 ELSE 0 END;
+        THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsMatch;
 END
 GO
+
