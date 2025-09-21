@@ -7,7 +7,10 @@ use YaSamurai;
 
 /*Double Bottom W Table*/
 /*SELECT * FROM dbo.DoubleBottomW;
-SELECT * FROM dbo.DoubleBottomW ORDER BY Id DESC*/
+SELECT * FROM dbo.DoubleBottomW ORDER BY Id DESC;
+EXEC dbo.GetLastDoubleBottomW;
+TRUNCATE TABLE dbo.DoubleBottomW;
+*/
 
 DROP TABLE IF EXISTS DoubleBottomW;
 CREATE TABLE DoubleBottomW
